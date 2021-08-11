@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNet.OData;
+using ODataApp2.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -63,7 +65,7 @@ namespace ODataApp2.Controllers
                 return BadRequest(ModelState);
             }
             var entity = await db.products.FindAsync(key);
-            if(entity == null)
+            if (entity == null)
             {
                 return NotFound();
             }
@@ -72,7 +74,7 @@ namespace ODataApp2.Controllers
             {
                 await db.SaveChangesAsync();
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
                 if (!ProductExists(key))
                 {
@@ -89,7 +91,7 @@ namespace ODataApp2.Controllers
         public async Task<IHttpActionResult> Delete([FromODataUri] int key)
         {
             var product = await db.products.FindAsync(key);
-            if(product == null)
+            if (product == null)
             {
                 return NotFound();
             }
@@ -97,5 +99,49 @@ namespace ODataApp2.Controllers
             await db.SaveChangesAsync();
             return StatusCode(HttpStatusCode.NoContent);
         }
+
+        [HttpPost]
+        public async Task<IHttpActionResult> Rate([FromODataUri] int key, ODataActionParameters parameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            int rating = (int)parameters["Rating"];
+            db.ProductRatings.Add(new ProductRating
+            {
+                product_id = key,
+                rating = rating
+                
+            });
+
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch(DbUpdateException e)
+            {
+                Debug.WriteLine(e.ToString());
+                if (!ProductExists(key))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        [HttpGet]
+        public IHttpActionResult MostExpensive()
+        {
+            var product = db.products.Max(p => p.list_price);
+            return Ok(product);
+        }
+
     }
 }

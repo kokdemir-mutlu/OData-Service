@@ -1,3 +1,4 @@
+using ODataApp2.Models;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
@@ -16,6 +17,7 @@ namespace ODataApp2
         public virtual DbSet<Category> categories { get; set; }
         public virtual DbSet<Product> products { get; set; }
         public virtual DbSet<Stock> stocks { get; set; }
+        public virtual DbSet<ProductRating> ProductRatings { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -37,6 +39,9 @@ namespace ODataApp2
 
             modelBuilder.Entity<Stock>()
                 .Property(e => e.quantity);
+
+            modelBuilder.Entity<ProductRating>();
+
         }
     }
 }

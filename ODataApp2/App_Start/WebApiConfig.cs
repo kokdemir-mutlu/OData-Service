@@ -11,26 +11,28 @@ namespace ODataApp2
     {
         public static void Register(HttpConfiguration config)
         {
-            // Web API configuration and services
-
-            // Web API routes
-            //config.MapHttpAttributeRoutes();
-
-            //config.Routes.MapHttpRoute(
-            //    name: "DefaultApi",
-            //    routeTemplate: "api/{controller}/{id}",
-            //    defaults: new { id = RouteParameter.Optional }
-            //);
-
 
             ODataModelBuilder builder = new ODataConventionModelBuilder();
 
             config.Filter().OrderBy().Expand().Select().Count().MaxTop(null);
-            
+
+            builder.Namespace = "ODataApp2";
             builder.EntitySet<Product>("products");
             builder.EntitySet<Category>("categories");
             builder.EntitySet<Stock>("stocks");
             builder.EntitySet<Brand>("brands");
+
+            builder.EntityType<Product>()
+                .Action("Rate")
+                .Parameter<int>("Rating");
+
+            builder.EntityType<Product>().Collection
+                .Function("MostExpensive")
+                .Returns<double>();
+
+            builder.Function("GetTaxRateByCategory")
+                .Returns<double>()
+                .Parameter<int>("Category");
             
             config.MapODataServiceRoute(
                 routeName: "ODataRoute",
