@@ -16,7 +16,7 @@ namespace ODataApp2
 
             config.Filter().OrderBy().Expand().Select().Count().MaxTop(null);
 
-            builder.Namespace = "ODataApp2";
+            builder.Namespace = "ODataApp";
             builder.EntitySet<Product>("products");
             builder.EntitySet<Category>("categories");
             builder.EntitySet<Stock>("stocks");

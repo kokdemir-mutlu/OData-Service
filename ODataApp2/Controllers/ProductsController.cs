@@ -40,6 +40,16 @@ namespace ODataApp2.Controllers
             return SingleResult.Create(result);
         }
 
+        public async Task<IHttpActionResult> GetProduct_Name(int key)
+        {
+            Product prod = await db.products.FindAsync(key);
+            if(prod == null)
+            {
+                return NotFound();
+            }
+            return Ok(prod.product_name);
+        }
+
         [EnableQuery]
         public SingleResult<Category> GetCategories([FromODataUri] int key)
         {

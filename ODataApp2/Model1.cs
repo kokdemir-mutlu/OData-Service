@@ -40,7 +40,7 @@ namespace ODataApp2
             modelBuilder.Entity<Stock>()
                 .Property(e => e.quantity);
 
-            modelBuilder.Entity<ProductRating>();
+            //modelBuilder.Entity<ProductRating>();
 
         }
     }
